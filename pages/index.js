@@ -22,6 +22,15 @@ export default function Home() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const inputRef = useRef(null);
+  const endOfMessagesRef = useRef(null);
+
+  const scrollToBottom = () => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
 
   const addMessage = (role, content) => {
     setMessages((prev) => [...prev, { role, content }]);
@@ -106,6 +115,7 @@ export default function Home() {
             </div>
           </div>
         )}
+        <div ref={endOfMessagesRef} />
       </main>
       <form
         onSubmit={handleSubmit}

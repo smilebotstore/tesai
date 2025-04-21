@@ -1,5 +1,5 @@
-import formidable from 'formidable';
-import fs from 'fs';
+const formidable = require('formidable');
+const fs = require('fs');
 
 export const config = {
   api: {

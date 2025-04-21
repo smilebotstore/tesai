@@ -7,18 +7,18 @@ const ChatBubble = ({ message }) => {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}>
       <div
-        className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg break-words whitespace-pre-wrap text-[15px] leading-[1.5] font-normal ${
+        className={`max-w-[80%] px-4 py-2 rounded-2xl break-words whitespace-pre-wrap text-[15px] leading-[1.5] font-normal ${
           isUser
             ? 'bg-green-600 text-white rounded-br-none'
             : 'bg-gray-700 text-white rounded-bl-none'
         }`}
       >
-        {message.content}
+        <div>{message.content}</div>
         {message.image && (
           <img
             src={message.image}
             alt="Uploaded"
-            className="mt-2 rounded-md max-w-xs max-h-60 object-contain"
+            className="mt-2 rounded-md max-w-full h-auto object-contain"
           />
         )}
       </div>
@@ -195,7 +195,7 @@ export default function Home() {
           ))}
           {isTyping && (
             <div className="flex justify-start mb-2">
-              <div className="bg-gray-700 px-4 py-2 rounded-lg rounded-bl-none text-white max-w-xs md:max-w-md">
+              <div className="bg-gray-700 px-4 py-2 rounded-2xl rounded-bl-none text-white max-w-[80%]">
                 <TypingAnimation />
               </div>
             </div>
@@ -261,4 +261,4 @@ export default function Home() {
       </div>
     </>
   );
-      }
+                                     }

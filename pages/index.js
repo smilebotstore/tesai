@@ -168,11 +168,12 @@ export default function Home() {
   <div className="flex justify-between items-center text-white">
     <span className="text-lg font-semibold">ChatGPT Clone (Dark Mode)</span>
     <a
-      href="/about.html"
-      className="font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
-    >
-      About
-    </a>
+  href="/about.html"
+  className="flex items-center gap-1.5 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
+>
+  About
+  <Info size={16} />
+</a>
   </div>
 </header>
 

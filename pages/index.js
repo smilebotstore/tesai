@@ -165,7 +165,7 @@ export default function Home() {
         style={{ fontFamily: '"Inter", sans-serif' }}
       >
         {/* Header with About */}
-        header className="bg-gray-800 px-4 py-3 border-b border-gray-700">
+        <header className="bg-gray-800 px-4 py-3 border-b border-gray-700">
   <div className="flex justify-between items-center text-white">
     <span className="text-lg font-semibold">ChatGPT Clone (Dark Mode)</span>
     <a

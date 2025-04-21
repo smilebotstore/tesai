@@ -165,16 +165,16 @@ export default function Home() {
         style={{ fontFamily: '"Inter", sans-serif' }}
       >
         {/* Header with About */}
-        <header className="bg-gray-800 px-4 py-3 border-b border-gray-700">
+        header className="bg-gray-800 px-4 py-3 border-b border-gray-700">
   <div className="flex justify-between items-center text-white">
     <span className="text-lg font-semibold">ChatGPT Clone (Dark Mode)</span>
     <a
-  href="/about.html"
-  className="flex items-center gap-1.5 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
->
-  About
-  <Info size={16} />
-</a>
+      href="/about.html"
+      className="flex items-center gap-1 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
+    >
+      <Info className="w-4 h-4" />
+      About
+    </a>
   </div>
 </header>
 

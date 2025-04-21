@@ -25,11 +25,13 @@ export default function Home() {
   const endOfMessagesRef = useRef(null);
 
   const scrollToBottom = () => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'auto' });
   };
 
   useEffect(() => {
-    scrollToBottom();
+    setTimeout(() => {
+      scrollToBottom();
+    }, 100);
   }, [messages, isTyping]);
 
   const addMessage = (role, content) => {
@@ -50,7 +52,9 @@ export default function Home() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...messages, { role: 'user', content: lastUserMessage.content }] }),
+        body: JSON.stringify({
+          messages: [...messages, { role: 'user', content: lastUserMessage.content }],
+        }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -77,7 +81,9 @@ export default function Home() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...messages, { role: 'user', content: userMessage }] }),
+        body: JSON.stringify({
+          messages: [...messages, { role: 'user', content: userMessage }],
+        }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -104,10 +110,12 @@ export default function Home() {
       <header className="bg-gray-800 p-4 text-center font-bold text-xl border-b border-gray-700">
         ChatGPT Clone (Dark Mode)
       </header>
-      <main className="flex-1 overflow-y-auto p-4 space-y-2">
+
+      <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-32">
         {messages.map((msg, idx) => (
           <ChatBubble key={idx} message={msg} />
         ))}
+
         {isTyping && (
           <div className="flex justify-start mb-2">
             <div className="bg-gray-700 px-4 py-2 rounded-lg rounded-bl-none text-white max-w-xs md:max-w-md">
@@ -115,8 +123,10 @@ export default function Home() {
             </div>
           </div>
         )}
+
         <div ref={endOfMessagesRef} />
       </main>
+
       <form
         onSubmit={handleSubmit}
         className="p-4 bg-gray-800 border-t border-gray-700 fixed bottom-0 left-0 right-0"

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+html, body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F3F4F6; /* light gray background */
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}

@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       }
       return {
         role: msg.role,
-        content: msg.content,
+        content: msg.content.trim(),
       };
     });
 

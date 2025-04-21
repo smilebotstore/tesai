@@ -165,11 +165,11 @@ export default function Home() {
       >
         {/* Header with About */}
         <header className="bg-gray-800 px-4 py-3 border-b border-gray-700">
-  <div className="flex items-center gap-3 text-white text-lg font-semibold">
-    <span>ChatGPT Clone (Dark Mode)</span>
+  <div className="flex justify-between items-center text-white">
+    <span className="text-lg font-semibold">ChatGPT Clone (Dark Mode)</span>
     <a
       href="/about.html"
-      className="text-white font-bold text-sm hover:text-gray-300"
+      className="font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
     >
       About
     </a>

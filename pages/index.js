@@ -6,7 +6,9 @@ const ChatBubble = ({ message }) => {
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}>
       <div
         className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg break-words whitespace-pre-wrap ${
-          isUser ? 'bg-userMessage text-gray-900 rounded-br-none' : 'bg-aiMessage text-gray-900 rounded-bl-none'
+          isUser
+            ? 'bg-green-600 text-white rounded-br-none'
+            : 'bg-gray-700 text-white rounded-bl-none'
         }`}
       >
         {message.content}
@@ -81,7 +83,6 @@ export default function Home() {
     }
   };
 
-  // Handle Shift+Enter for new line in textarea
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -90,9 +91,9 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-chatBackground">
-      <header className="bg-white shadow p-4 text-center font-bold text-xl border-b border-gray-300">
-        ChatGPT
+    <div className="flex flex-col h-screen bg-gray-900 text-white">
+      <header className="bg-gray-800 p-4 text-center font-bold text-xl border-b border-gray-700">
+        ChatGPT Clone (Dark Mode)
       </header>
       <main className="flex-1 overflow-y-auto p-4 space-y-2">
         {messages.map((msg, idx) => (
@@ -100,16 +101,19 @@ export default function Home() {
         ))}
         {isTyping && (
           <div className="flex justify-start mb-2">
-            <div className="bg-aiMessage px-4 py-2 rounded-lg rounded-bl-none text-gray-900 max-w-xs md:max-w-md">
+            <div className="bg-gray-700 px-4 py-2 rounded-lg rounded-bl-none text-white max-w-xs md:max-w-md">
               <TypingAnimation />
             </div>
           </div>
         )}
       </main>
-      <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-gray-300 fixed bottom-0 left-0 right-0">
+      <form
+        onSubmit={handleSubmit}
+        className="p-4 bg-gray-800 border-t border-gray-700 fixed bottom-0 left-0 right-0"
+      >
         <textarea
           ref={inputRef}
-          className="w-full border border-gray-300 rounded-md p-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border border-gray-600 bg-gray-900 text-white rounded-md p-2 resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
           rows={1}
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -122,17 +126,17 @@ export default function Home() {
             type="button"
             onClick={regenerateResponse}
             disabled={isTyping || messages.length === 0}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md disabled:opacity-50"
           >
-            Regenerate Response
+            Regenerate
           </button>
           <button
             type="button"
             onClick={clearChat}
             disabled={isTyping && messages.length === 0}
-            className="bg-gray-400 text-white px-4 py-2 rounded-md disabled:opacity-50"
+            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md disabled:opacity-50"
           >
-            Clear Chat
+            Clear
           </button>
         </div>
       </form>
@@ -153,7 +157,7 @@ const TypingAnimation = () => {
 const Dot = ({ delay = 0 }) => {
   return (
     <span
-      className="w-3 h-3 bg-gray-500 rounded-full animate-bounce"
+      className="w-3 h-3 bg-gray-400 rounded-full animate-bounce"
       style={{ animationDelay: `${delay}ms` }}
     />
   );

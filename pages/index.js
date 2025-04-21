@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
-import { RotateCcw, Trash2, Send } from 'lucide-react';
-import { Info } from 'lucide-react';
+import { RotateCcw, Trash2, Send, Info, Paperclip } from 'lucide-react';
 
 const ChatBubble = ({ message }) => {
   const isUser = message.role === 'user';
@@ -15,6 +14,13 @@ const ChatBubble = ({ message }) => {
         }`}
       >
         {message.content}
+        {message.image && (
+          <img
+            src={message.image}
+            alt="Uploaded"
+            className="mt-2 rounded-md max-w-xs"
+          />
+        )}
       </div>
     </div>
   );
@@ -39,6 +45,7 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
   const inputRef = useRef(null);
   const endOfMessagesRef = useRef(null);
 
@@ -67,6 +74,10 @@ export default function Home() {
     autoResizeTextarea();
   }, [input]);
 
+  const scrollToBottom = () => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'auto' });
+  };
+
   const autoResizeTextarea = () => {
     const textarea = inputRef.current;
     if (textarea) {
@@ -75,17 +86,14 @@ export default function Home() {
     }
   };
 
-  const scrollToBottom = () => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: 'auto' });
-  };
-
-  const addMessage = (role, content) => {
-    setMessages((prev) => [...prev, { role, content }]);
+  const addMessage = (role, content, image = null) => {
+    setMessages((prev) => [...prev, { role, content, image }]);
   };
 
   const clearChat = () => {
     setMessages([]);
     setInput('');
+    setImageFile(null);
     localStorage.removeItem('chat_messages');
   };
 
@@ -94,6 +102,7 @@ export default function Home() {
     const lastUserMessage = messages.filter((m) => m.role === 'user').slice(-1)[0];
     if (!lastUserMessage) return;
     setIsTyping(true);
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -117,19 +126,23 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() && !imageFile) return;
+
     const userMessage = input.trim();
-    addMessage('user', userMessage);
+    const imagePreview = imageFile ? URL.createObjectURL(imageFile) : null;
+
+    addMessage('user', userMessage, imagePreview);
     setInput('');
     setIsTyping(true);
+
+    const formData = new FormData();
+    formData.append('input', userMessage);
+    if (imageFile) formData.append('image', imageFile);
 
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages, { role: 'user', content: userMessage }],
-        }),
+        body: formData,
       });
       const data = await res.json();
       if (res.ok) {
@@ -141,6 +154,7 @@ export default function Home() {
       alert(error.message || 'Error generating response');
     } finally {
       setIsTyping(false);
+      setImageFile(null);
     }
   };
 
@@ -164,25 +178,23 @@ export default function Home() {
         className="flex flex-col h-screen bg-gray-900 text-white font-sans"
         style={{ fontFamily: '"Inter", sans-serif' }}
       >
-        {/* Header with About */}
         <header className="bg-gray-800 px-4 py-3 border-b border-gray-700">
-  <div className="flex justify-between items-center text-white">
-    <span className="text-lg font-semibold">Smile Bot AI</span>
-    <a
-      href="/about.html"
-      className="flex items-center gap-1 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
-    >
-      <Info className="w-4 h-4" />
-      About
-    </a>
-  </div>
-</header>
+          <div className="flex justify-between items-center text-white">
+            <span className="text-lg font-semibold">Smile Bot AI</span>
+            <a
+              href="/about.html"
+              className="flex items-center gap-1 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
+            >
+              <Info className="w-4 h-4" />
+              About
+            </a>
+          </div>
+        </header>
 
         <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-32 text-[15px] leading-[1.5]">
           {messages.map((msg, idx) => (
             <ChatBubble key={idx} message={msg} />
           ))}
-
           {isTyping && (
             <div className="flex justify-start mb-2">
               <div className="bg-gray-700 px-4 py-2 rounded-lg rounded-bl-none text-white max-w-xs md:max-w-md text-[15px]">
@@ -190,7 +202,6 @@ export default function Home() {
               </div>
             </div>
           )}
-
           <div ref={endOfMessagesRef} />
         </main>
 
@@ -199,6 +210,16 @@ export default function Home() {
           className="p-4 bg-gray-800 border-t border-gray-700 fixed bottom-0 left-0 right-0"
         >
           <div className="relative">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="image-upload"
+              onChange={(e) => setImageFile(e.target.files[0])}
+            />
+            <label htmlFor="image-upload" className="absolute left-2 bottom-2 text-gray-400 hover:text-white p-2 cursor-pointer">
+              <Paperclip size={20} />
+            </label>
             <textarea
               ref={inputRef}
               className="w-full border border-gray-600 bg-gray-900 text-white rounded-md p-2 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 pr-12 text-[15px] overflow-hidden"
@@ -213,7 +234,7 @@ export default function Home() {
             <button
               type="submit"
               className="absolute right-2 bottom-2 text-gray-400 hover:text-white p-2"
-              disabled={isTyping || input.trim() === ''}
+              disabled={isTyping || (!input.trim() && !imageFile)}
             >
               <Send size={24} strokeWidth={1.5} />
             </button>
@@ -243,4 +264,4 @@ export default function Home() {
       </div>
     </>
   );
-}
+    }

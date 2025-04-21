@@ -1,4 +1,4 @@
-import { sanitizeInput } from '../../utils/sanitize';
+//import { sanitizeInput } from '../../utils/sanitize';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       }
       return {
         role: msg.role,
-        content: sanitizeInput(msg.content),
+        content: msg.content,
       };
     });
 

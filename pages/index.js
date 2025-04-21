@@ -49,6 +49,9 @@ export default function Home() {
       } catch (e) {
         console.error('Failed to parse messages from localStorage');
       }
+    } else {
+      // system message
+      setMessages([{ role: 'assistant', content: 'Halo, saya Smile AI!' }]);
     }
   }, []);
 

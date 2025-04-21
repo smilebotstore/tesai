@@ -50,7 +50,6 @@ export default function Home() {
         console.error('Failed to parse messages from localStorage');
       }
     } else {
-      // system message
       setMessages([{ role: 'assistant', content: 'Halo, saya Smile AI!' }]);
     }
   }, []);
@@ -164,8 +163,15 @@ export default function Home() {
         className="flex flex-col h-screen bg-gray-900 text-white font-sans"
         style={{ fontFamily: '"Inter", sans-serif' }}
       >
-        <header className="bg-gray-800 p-4 text-center font-semibold text-lg border-b border-gray-700">
-          ChatGPT Clone (Dark Mode)
+        {/* Header with About */}
+        <header className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex justify-between items-center">
+          <h1 className="text-lg font-semibold">ChatGPT Clone (Dark Mode)</h1>
+          <a
+            href="/about.html"
+            className="text-sm text-white hover:text-gray-300 underline underline-offset-2"
+          >
+            About
+          </a>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-32 text-[15px] leading-[1.5]">
@@ -233,4 +239,4 @@ export default function Home() {
       </div>
     </>
   );
-    }
+}

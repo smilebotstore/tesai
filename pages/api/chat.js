@@ -7,7 +7,6 @@ export default async function handler(req, res) {
   try {
     const { messages } = req.body;
 
-    // Validasi pesan
     if (!Array.isArray(messages)) {
       return res.status(400).json({ error: 'Invalid messages format' });
     }
@@ -25,7 +24,11 @@ export default async function handler(req, res) {
       };
     });
 
-    // Request ke Groq API
+    const systemPrompt = {
+      role: "system",
+      content: "Kamu adalah SmileBot, asisten AI yang ramah, lucu, dan suka ngobrol. Jawab dengan gaya santai tapi sopan, dan selalu ingat konteks obrolan.",
+    };
+
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -34,7 +37,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'llama3-70b-8192',
-        messages: sanitizedMessages,
+        messages: [systemPrompt, ...sanitizedMessages],
         temperature: 0.7,
       }),
     });
@@ -52,7 +55,6 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'No assistant message returned' });
     }
 
-    // Bersihin hasil dari AI (sekedar trim spasi)
     assistantMessage.content = assistantMessage.content.trim();
 
     return res.status(200).json({ message: assistantMessage });

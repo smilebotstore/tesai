@@ -41,6 +41,23 @@ export default function Home() {
   const inputRef = useRef(null);
   const endOfMessagesRef = useRef(null);
 
+  // Ambil chat dari localStorage saat load
+  useEffect(() => {
+    const storedMessages = localStorage.getItem('chat_messages');
+    if (storedMessages) {
+      try {
+        setMessages(JSON.parse(storedMessages));
+      } catch (e) {
+        console.error('Failed to parse messages from localStorage');
+      }
+    }
+  }, []);
+
+  // Simpan chat ke localStorage setiap kali berubah
+  useEffect(() => {
+    localStorage.setItem('chat_messages', JSON.stringify(messages));
+  }, [messages]);
+
   const scrollToBottom = () => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'auto' });
   };
@@ -58,6 +75,7 @@ export default function Home() {
   const clearChat = () => {
     setMessages([]);
     setInput('');
+    localStorage.removeItem('chat_messages');
   };
 
   const regenerateResponse = async () => {
@@ -162,7 +180,7 @@ export default function Home() {
           <div className="relative">
             <textarea
               ref={inputRef}
-              className="w-full border border-gray-600 bg-gray-900 text-white rounded-md p-2 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 pr-10 text-[15px]"
+              className="w-full border border-gray-600 bg-gray-900 text-white rounded-md p-2 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 pr-12 text-[15px]"
               rows={1}
               value={input}
               onChange={(e) => setInput(e.target.value)}

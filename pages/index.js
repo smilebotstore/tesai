@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import Head from 'next/head';
+port Head from 'next/head';
 import { RotateCcw, Trash2, Send } from 'lucide-react';
 
 const ChatBubble = ({ message }) => {

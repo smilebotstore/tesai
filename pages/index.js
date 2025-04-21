@@ -1,4 +1,4 @@
-mport { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { RotateCcw, Trash2, Send } from 'lucide-react';
 

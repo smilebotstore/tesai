@@ -164,15 +164,17 @@ export default function Home() {
         style={{ fontFamily: '"Inter", sans-serif' }}
       >
         {/* Header with About */}
-        <header className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex justify-between items-center">
-          <h1 className="text-lg font-semibold">ChatGPT Clone (Dark Mode)</h1>
-          <a
-            href="/about.html"
-            className="text-sm text-white hover:text-gray-300 underline underline-offset-2"
-          >
-            About
-          </a>
-        </header>
+        <header className="bg-gray-800 px-4 py-3 border-b border-gray-700">
+  <div className="flex items-center gap-3 text-white text-lg font-semibold">
+    <span>ChatGPT Clone (Dark Mode)</span>
+    <a
+      href="/about.html"
+      className="text-white font-bold text-sm hover:text-gray-300"
+    >
+      About
+    </a>
+  </div>
+</header>
 
         <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-32 text-[15px] leading-[1.5]">
           {messages.map((msg, idx) => (

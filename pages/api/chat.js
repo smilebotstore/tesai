@@ -1,5 +1,3 @@
-//import { sanitizeInput } from '../../utils/sanitize';
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
@@ -9,12 +7,12 @@ export default async function handler(req, res) {
   try {
     const { messages } = req.body;
 
+    // Validasi pesan
     if (!Array.isArray(messages)) {
       return res.status(400).json({ error: 'Invalid messages format' });
     }
 
-    // Limit message length and sanitize content
-    const sanitizedMessages = messages.map(msg => {
+    const sanitizedMessages = messages.map((msg) => {
       if (!msg.content || typeof msg.content !== 'string') {
         throw new Error('Invalid message content');
       }
@@ -27,6 +25,7 @@ export default async function handler(req, res) {
       };
     });
 
+    // Request ke Groq API
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -47,18 +46,17 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Return only the latest assistant message
     const assistantMessage = data.choices?.[0]?.message || null;
 
     if (!assistantMessage) {
       return res.status(500).json({ error: 'No assistant message returned' });
     }
 
-    // Sanitize AI output before sending
-    assistantMessage.content = sanitizeInput(assistantMessage.content);
+    // Bersihin hasil dari AI (sekedar trim spasi)
+    assistantMessage.content = assistantMessage.content.trim();
 
-    res.status(200).json({ message: assistantMessage });
+    return res.status(200).json({ message: assistantMessage });
   } catch (error) {
-    res.status(500).json({ error: error.message || 'Internal Server Error' });
+    return res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }

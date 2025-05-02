@@ -227,7 +227,7 @@ export default function Home() {
             <button onClick={() => setDrawerOpen(true)}>
               <Menu className="text-white" />
             </button>
-            <span className="text-lg font-semibold absolute left-1/2 transform -translate-x-1/2">
+            <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center text-lg font-semibold text-white">
           <Bot size={18} className="mr-8 text-white" />
               Smile Bot AI
             </span>

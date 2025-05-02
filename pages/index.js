@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+mport { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { RotateCcw, Trash2, Send, Info, Paperclip, Menu } from 'lucide-react';
 
@@ -50,7 +50,7 @@ export default function Home() {
   const inputRef = useRef(null);
   const endOfMessagesRef = useRef(null);
   const overlayRef = useRef(null);
-
+  
   // State untuk menyimpan session sebelumnya
   const [previousSessions, setPreviousSessions] = useState([]);
 
@@ -182,7 +182,7 @@ export default function Home() {
               </button>
               <hr className="border-gray-700 mt-4" />
               {/* Daftar session sebelumnya */}
-              <div className="mt-2">
+              <div className="mt-4">
                 {previousSessions.map((session, index) => (
                   <button
                     key={index}

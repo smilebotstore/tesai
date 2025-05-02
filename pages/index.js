@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
-import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X } from 'lucide-react';
+import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X, Bot } from 'lucide-react';
 
 const ChatBubble = ({ message }) => {
   const isUser  = message.role === 'user';
@@ -228,6 +228,7 @@ export default function Home() {
               <Menu className="text-white" />
             </button>
             <span className="text-lg font-semibold absolute left-1/2 transform -translate-x-1/2">
+          <Bot size={18} className="mr-8 text-white" />
               Smile Bot AI
             </span>
             <a

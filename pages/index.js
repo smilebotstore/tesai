@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
-import { RotateCcw, Trash2, Send, Info, Paperclip, Menu } from 'lucide-react';
+import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X } from 'lucide-react';
 
 const ChatBubble = ({ message }) => {
   const isUser  = message.role === 'user';
@@ -95,12 +95,12 @@ export default function Home() {
   };
 
   const startNewSession = () => {
-    // Simpan session sebelumnya ke localStorage
-    const newSession = messages;
-    const updatedSessions = [...previousSessions, newSession];
-    setPreviousSessions(updatedSessions);
-    localStorage.setItem('chatSessions', JSON.stringify(updatedSessions));
-
+    // Simpan session sebelumnya ke localStorage jika ada pesan lebih dari satu
+    if (messages.length > 1) {
+      const updatedSessions = [...previousSessions, messages];
+      setPreviousSessions(updatedSessions);
+      localStorage.setItem('chatSessions', JSON.stringify(updatedSessions));
+    }
     // Reset chat
     setMessages([{ role: 'assistant', content: 'Halo, saya Smile AI!' }]);
     setInput('');
@@ -113,6 +113,13 @@ export default function Home() {
     setInput('');
     setImageFile(null);
     setDrawerOpen(false);
+  };
+
+  const deleteSession = (index) => {
+    const updatedSessions = [...previousSessions];
+    updatedSessions.splice(index, 1);
+    setPreviousSessions(updatedSessions);
+    localStorage.setItem('chatSessions', JSON.stringify(updatedSessions));
   };
 
   const handleSubmit = async (e) => {
@@ -173,7 +180,7 @@ export default function Home() {
             ref={overlayRef}
             className="fixed inset-0 bg-black bg-opacity-50 z-40 flex"
           >
-            <div className="bg-gray-800 w-56 h-full p-4 border-r border-gray-700 z-50">
+            <div className="bg-gray-800 w-56 h-full p-4 border-r border-gray-700 z-50 flex flex-col">
               <button
                 onClick={startNewSession}
                 className="w-full text-left text-sm font-semibold px-3 py-2 border border-gray-600 rounded-md text-gray-300 hover:bg-gray-700"
@@ -182,15 +189,31 @@ export default function Home() {
               </button>
               <hr className="border-gray-700 mt-4" />
               {/* Daftar session sebelumnya */}
-              <div className="mt-4">
+              <div className="mt-4 flex-1 overflow-auto">
+                {previousSessions.length === 0 && (
+                  <p className="text-gray-500 text-sm text-center mt-2">Belum ada sesi sebelumnya</p>
+                )}
                 {previousSessions.map((session, index) => (
-                  <button
+                  <div
                     key={index}
-                    onClick={() => loadSession(session)}
-                    className="w-full text-left text-sm font-semibold px-3 py-2 border border-gray-600 rounded-md text-gray-300 hover:bg-gray-700"
+                    className="flex items-center justify-between mb-2"
                   >
-                    Session {index + 1}
-                  </button>
+                    <button
+                      onClick={() => loadSession(session)}
+                      className="text-left text-sm font-semibold px-3 py-2 border border-gray-600 rounded-md text-gray-300 hover:bg-gray-700 flex-1 truncate"
+                      title={`Session ${index + 1}`}
+                    >
+                      Session {index + 1}
+                    </button>
+                    <button
+                      onClick={() => deleteSession(index)}
+                      className="ml-2 p-1 rounded-md border border-gray-600 text-gray-300 hover:bg-red-600 hover:text-white"
+                      aria-label={`Hapus Session ${index + 1}`}
+                      title={`Hapus Session ${index + 1}`}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>

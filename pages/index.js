@@ -184,7 +184,7 @@ export default function Home() {
               className="flex items-center gap-1 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
             >
               <Info className="w-4 h-4" />
-              About Smile Bot AI
+              About
             </a>
           </div>
         </header>

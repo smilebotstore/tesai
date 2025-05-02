@@ -230,7 +230,7 @@ export default function Home() {
             <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center text-lg font-semibold text-white">
           <Bot size={18} className="mr-8 text-white" />
               Smile Bot AI
-            </span>
+            </div>
             <a
               href="/about.html"
               className="flex items-center gap-1 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"

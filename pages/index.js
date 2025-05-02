@@ -227,9 +227,11 @@ export default function Home() {
             <button onClick={() => setDrawerOpen(true)}>
               <Menu className="text-white" />
             </button>
+          <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
             <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center text-lg font-semibold text-white">
           <Bot size={18} className="mr-8 text-white" />
               Smile Bot AI
+            </div>
             </div>
             <a
               href="/about.html"

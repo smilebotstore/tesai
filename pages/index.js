@@ -1,286 +1,160 @@
-import { useState, useEffect, useRef } from 'react';
-import Head from 'next/head';
-import { RotateCcw, Trash2, Send, Info, Paperclip, Menu } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react'; import Head from 'next/head'; import { RotateCcw, Trash2, Send, Info, Paperclip, Menu } from 'lucide-react';
 
-const ChatBubble = ({ message }) => {
-  const isUser = message.role === 'user';
-  return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}>
-      <div
-        className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg break-words whitespace-pre-wrap text-[15px] leading-[1.5] font-normal ${
-          isUser
-            ? 'bg-green-600 text-white rounded-br-none'
-            : 'bg-gray-700 text-white rounded-bl-none'
-        }`}
-      >
-        {message.content}
-        {message.image && (
-          <img
-            src={message.image}
-            alt="Uploaded"
-            className="mt-2 rounded-md w-full max-w-full max-h-60 object-contain"
-          />
-        )}
-      </div>
-    </div>
-  );
-};
+const ChatBubble = ({ message }) => { const isUser = message.role === 'user'; return ( <div className={flex ${isUser ? 'justify-end' : 'justify-start'} mb-2}> <div className={max-w-xs md:max-w-md px-4 py-2 rounded-lg break-words whitespace-pre-wrap text-[15px] leading-[1.5] font-normal ${ isUser ? 'bg-green-600 text-white rounded-br-none' : 'bg-gray-700 text-white rounded-bl-none' }}> {message.content} {message.image && ( <img src={message.image} alt="Uploaded" className="mt-2 rounded-md w-full max-h-60 object-contain" /> )} </div> </div> ); };
 
 const TypingAnimation = () => (
+
   <div className="flex space-x-1">
     <Dot />
     <Dot delay={200} />
     <Dot delay={400} />
   </div>
-);
+);const Dot = ({ delay = 0 }) => ( <span className="w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: ${delay}ms }} /> );
 
-const Dot = ({ delay = 0 }) => (
-  <span
-    className="w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce"
-    style={{ animationDelay: `${delay}ms` }}
-  />
-);
+export default function Home() { const [messages, setMessages] = useState([]); const [input, setInput] = useState(''); const [isTyping, setIsTyping] = useState(false); const [imageFile, setImageFile] = useState(null); const [drawerOpen, setDrawerOpen] = useState(false); const [sessions, setSessions] = useState([]); const [activeSessionId, setActiveSessionId] = useState(null); const inputRef = useRef(null); const endOfMessagesRef = useRef(null);
 
-export default function Home() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [showDrawer, setShowDrawer] = useState(false);
-  const inputRef = useRef(null);
-  const endOfMessagesRef = useRef(null);
+useEffect(() => { const savedSessions = JSON.parse(localStorage.getItem('sessions') || '[]'); setSessions(savedSessions); if (savedSessions.length > 0) { setMessages(savedSessions[0].messages); setActiveSessionId(savedSessions[0].id); } else { startNewSession(); } }, []);
 
-  useEffect(() => {
-    const stored = localStorage.getItem('chat_messages');
-    if (stored) {
-      try {
-        setMessages(JSON.parse(stored));
-      } catch {
-        console.error('Failed to load messages from localStorage');
-      }
-    } else {
-      setMessages([{ role: 'assistant', content: 'Halo, saya Smile AI!' }]);
-    }
-  }, []);
+useEffect(() => { localStorage.setItem('sessions', JSON.stringify(sessions)); }, [sessions]);
 
-  useEffect(() => {
-    localStorage.setItem('chat_messages', JSON.stringify(messages));
-  }, [messages]);
+useEffect(() => { autoResizeTextarea(); }, [input]);
 
-  useEffect(() => {
-    setTimeout(() => scrollToBottom(), 100);
-  }, [messages, isTyping]);
+const autoResizeTextarea = () => { const textarea = inputRef.current; if (textarea) { textarea.style.height = 'auto'; textarea.style.height = ${textarea.scrollHeight}px; } };
 
-  useEffect(() => {
-    autoResizeTextarea();
-  }, [input]);
+const scrollToBottom = () => { endOfMessagesRef.current?.scrollIntoView({ behavior: 'auto' }); };
 
-  const scrollToBottom = () => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: 'auto' });
-  };
+const startNewSession = () => { const newSession = { id: Date.now(), title: 'Obrolan ' + new Date().toLocaleTimeString(), messages: [{ role: 'assistant', content: 'Halo, saya Smile AI!' }], }; setSessions((prev) => [newSession, ...prev]); setMessages(newSession.messages); setActiveSessionId(newSession.id); setInput(''); };
 
-  const autoResizeTextarea = () => {
-    const textarea = inputRef.current;
-    if (textarea) {
-      textarea.style.height = 'auto';
-      textarea.style.height = `${textarea.scrollHeight}px`;
-    }
-  };
+const addMessage = (role, content, image = null) => { const updatedMessages = [...messages, { role, content, image }]; setMessages(updatedMessages); setSessions((prev) => prev.map((s) => s.id === activeSessionId ? { ...s, messages: updatedMessages } : s ) ); };
 
-  const addMessage = (role, content, image = null) => {
-    setMessages((prev) => [...prev, { role, content, image }]);
-  };
+const clearChat = () => { setMessages([]); setInput(''); setImageFile(null); setSessions((prev) => prev.map((s) => s.id === activeSessionId ? { ...s, messages: [] } : s ) ); };
 
-  const clearChat = () => {
-    setMessages([]);
-    setInput('');
-    setImageFile(null);
-    localStorage.removeItem('chat_messages');
-  };
+const handleSubmit = async (e) => { e.preventDefault(); if (!input.trim() && !imageFile) return;
 
-  const regenerateResponse = async () => {
-    if (messages.length === 0) return;
-    const lastUserMessage = messages.filter((m) => m.role === 'user').slice(-1)[0];
-    if (!lastUserMessage) return;
-    setIsTyping(true);
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages, { role: 'user', content: lastUserMessage.content }],
-        }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMessages((prev) => [...prev, data.message]);
-      } else {
-        alert(data.error || 'Error generating response');
-      }
-    } catch (err) {
-      alert(err.message || 'Error generating response');
-    } finally {
-      setIsTyping(false);
-    }
-  };
+const userMessage = input.trim();
+const imagePreview = imageFile ? URL.createObjectURL(imageFile) : null;
+addMessage('user', userMessage, imagePreview);
+setInput('');
+setIsTyping(true);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim() && !imageFile) return;
+const formData = new FormData();
+formData.append('input', userMessage);
+if (imageFile) formData.append('image', imageFile);
 
-    const userMessage = input.trim();
-    const imagePreview = imageFile ? URL.createObjectURL(imageFile) : null;
-
-    addMessage('user', userMessage, imagePreview);
-    setInput('');
-    setIsTyping(true);
-
-    const formData = new FormData();
-    formData.append('input', userMessage);
-    if (imageFile) formData.append('image', imageFile);
-
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMessages((prev) => [...prev, data.message]);
-      } else {
-        alert(data.error || 'Error generating response');
-      }
-    } catch (err) {
-      alert(err.message || 'Error generating response');
-    } finally {
-      setIsTyping(false);
-      setImageFile(null);
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
-
-  return (
-    <>
-      <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-      <div
-        className="flex flex-col h-screen bg-gray-900 text-white font-sans"
-        style={{ fontFamily: '"Inter", sans-serif' }}
-      >
-        {/* Drawer */}
-        <div
-          className={`fixed top-0 left-0 h-full w-64 bg-gray-800 text-white transform transition-transform duration-300 z-50 ${
-            showDrawer ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
-          <div className="p-4 border-b border-gray-700 font-bold text-lg">Smile Bot</div>
-          <button
-            onClick={clearChat}
-            className="w-full text-left px-4 py-2 hover:bg-gray-700 border-b border-gray-700"
-          >
-            Obrolan Baru
-          </button>
-          <hr className="border-gray-600 my-2" />
-          <div className="px-4 text-sm text-gray-400">Session sebelumnya (belum aktif)</div>
-        </div>
-
-        {/* Header */}
-        <header className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex items-center justify-center relative">
-          <button onClick={() => setShowDrawer(true)} className="absolute left-4 text-white">
-            <Menu size={20} />
-          </button>
-          <span className="text-lg font-semibold">Smile Bot AI</span>
-          <a
-            href="/about.html"
-            className="absolute right-4 flex items-center gap-1 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
-          >
-            <Info className="w-4 h-4" />
-            About
-          </a>
-        </header>
-
-        {/* Main */}
-        <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-32 text-[15px] leading-[1.5]">
-          {messages.map((msg, idx) => (
-            <ChatBubble key={idx} message={msg} />
-          ))}
-          {isTyping && (
-            <div className="flex justify-start mb-2">
-              <div className="bg-gray-700 px-4 py-2 rounded-lg rounded-bl-none text-white max-w-xs md:max-w-md">
-                <TypingAnimation />
-              </div>
-            </div>
-          )}
-          <div ref={endOfMessagesRef} />
-        </main>
-
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="p-4 bg-gray-800 border-t border-gray-700 fixed bottom-0 left-0 right-0"
-        >
-          <div className="relative flex items-end gap-2">
-            <label htmlFor="image-upload" className="text-gray-400 hover:text-white cursor-pointer p-2">
-              <Paperclip size={20} />
-            </label>
-            <input
-              id="image-upload"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => setImageFile(e.target.files[0])}
-            />
-            <textarea
-              ref={inputRef}
-              className="flex-1 border border-gray-600 bg-gray-900 text-white rounded-md p-2 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 text-[15px] overflow-hidden"
-              rows={1}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
-              maxLength={2000}
-            />
-            <button
-              type="submit"
-              className="text-gray-400 hover:text-white p-2"
-              disabled={isTyping || (!input.trim() && !imageFile)}
-            >
-              <Send size={24} strokeWidth={1.5} />
-            </button>
-          </div>
-
-          <div className="flex justify-between mt-3 gap-2">
-            <button
-              type="button"
-              onClick={regenerateResponse}
-              disabled={isTyping || messages.length === 0}
-              className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700 disabled:opacity-40"
-            >
-              <RotateCcw size={16} />
-              Regenerate
-            </button>
-            <button
-              type="button"
-              onClick={clearChat}
-              disabled={isTyping && messages.length === 0}
-              className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700 disabled:opacity-40"
-            >
-              <Trash2 size={16} />
-              Clear
-            </button>
-          </div>
-        </form>
-      </div>
-    </>
-  );
+try {
+  const res = await fetch('/api/chat', { method: 'POST', body: formData });
+  const data = await res.json();
+  if (res.ok) {
+    addMessage('assistant', data.message.content);
+  } else {
+    alert(data.error || 'Error generating response');
   }
+} catch (err) {
+  alert(err.message || 'Error generating response');
+} finally {
+  setIsTyping(false);
+  setImageFile(null);
+}
+
+};
+
+return ( <> <Head> <title>Smile Bot AI</title> </Head> <div className="flex h-screen bg-gray-900 text-white"> {/* Drawer */} <div className={fixed inset-y-0 left-0 w-64 bg-gray-800 border-r border-gray-700 p-4 transform transition-transform duration-300 z-20 ${ drawerOpen ? 'translate-x-0' : '-translate-x-full' }} > <h2 className="text-xl font-bold mb-4">Smile Bot</h2> <button
+onClick={startNewSession}
+className="w-full mb-2 py-2 bg-gray-700 hover:bg-gray-600 rounded-md text-left px-3"
+> Obrolan Baru </button> <hr className="border-gray-600 my-3" /> <div className="text-sm text-gray-400"> {sessions.map((s) => ( <div key={s.id} className={px-3 py-2 rounded-md cursor-pointer ${ s.id === activeSessionId ? 'bg-gray-700 text-white' : 'hover:bg-gray-700' }} onClick={() => { setActiveSessionId(s.id); setMessages(s.messages); setDrawerOpen(false); }} > {s.title} </div> ))} {sessions.length === 0 && <div className="px-3 py-2">Session sebelumnya (belum aktif)</div>} </div> </div>
+
+{/* Overlay */}
+    {drawerOpen && (
+      <div
+        className="fixed inset-0 bg-black opacity-30 z-10"
+        onClick={() => setDrawerOpen(false)}
+      ></div>
+    )}
+
+    {/* Main Content */}
+    <div className="flex-1 flex flex-col">
+      {/* Header */}
+      <header className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex justify-between items-center">
+        <button onClick={() => setDrawerOpen(!drawerOpen)}>
+          <Menu className="text-white w-5 h-5" />
+        </button>
+        <span className="text-lg font-semibold">Smile Bot AI</span>
+        <a
+          href="/about.html"
+          className="flex items-center gap-1 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
+        >
+          <Info className="w-4 h-4" /> About
+        </a>
+      </header>
+
+      <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-32 text-[15px] leading-[1.5]">
+        {messages.map((msg, idx) => (
+          <ChatBubble key={idx} message={msg} />
+        ))}
+        {isTyping && (
+          <div className="flex justify-start mb-2">
+            <div className="bg-gray-700 px-4 py-2 rounded-lg rounded-bl-none text-white max-w-xs md:max-w-md">
+              <TypingAnimation />
+            </div>
+          </div>
+        )}
+        <div ref={endOfMessagesRef} />
+      </main>
+
+      {/* Chat Input */}
+      <form
+        onSubmit={handleSubmit}
+        className="p-4 bg-gray-800 border-t border-gray-700"
+      >
+        <div className="relative flex items-end gap-2">
+          <label htmlFor="image-upload" className="text-gray-400 hover:text-white cursor-pointer p-2">
+            <Paperclip size={20} />
+          </label>
+          <input
+            id="image-upload"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => setImageFile(e.target.files[0])}
+          />
+          <textarea
+            ref={inputRef}
+            className="flex-1 border border-gray-600 bg-gray-900 text-white rounded-md p-2 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 text-[15px] overflow-hidden"
+            rows={1}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type your message..."
+          />
+          <button
+            type="submit"
+            className="text-gray-400 hover:text-white p-2"
+            disabled={isTyping || (!input.trim() && !imageFile)}
+          >
+            <Send size={24} strokeWidth={1.5} />
+          </button>
+        </div>
+        <div className="flex justify-between mt-3 gap-2">
+          <button
+            type="button"
+            onClick={clearChat}
+            disabled={isTyping && messages.length === 0}
+            className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700 disabled:opacity-40"
+          >
+            <Trash2 size={16} /> Clear
+          </button>
+          <button
+            type="button"
+            onClick={() => regenerateResponse()}
+            disabled={isTyping || messages.length === 0}
+            className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700 disabled:opacity-40"
+          >
+            <RotateCcw size={16} /> Regenerate
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</>
+
+); }
+

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'; import Head from 'next/head'; import { RotateCcw, Trash2, Send, Info, Paperclip, Menu } from 'lucide-react';
 
-const ChatBubble = ({ message }) => { const isUser = message.role === 'user'; return ( <div className={flex ${isUser ? 'justify-end' : 'justify-start'} mb-2}> <div className={max-w-xs md:max-w-md px-4 py-2 rounded-lg break-words whitespace-pre-wrap text-[15px] leading-[1.5] font-normal ${ isUser ? 'bg-green-600 text-white rounded-br-none' : 'bg-gray-700 text-white rounded-bl-none' }} > {message.content} {message.image && ( <img
+const ChatBubble = ({ message }) => { const isUser = message.role === 'user'; return ( <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}> <div className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg break-words whitespace-pre-wrap text-[15px] leading-[1.5] font-normal ${ isUser ? 'bg-green-600 text-white rounded-br-none' : 'bg-gray-700 text-white rounded-bl-none' }`} > {message.content} {message.image && ( <img
 src={message.image}
 alt="Uploaded"
 className="mt-2 rounded-md w-full max-h-60 object-contain"

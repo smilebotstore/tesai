@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
-import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X, Bot } from 'lucide-react';
+import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X } from 'lucide-react';
 
 const ChatBubble = ({ message }) => {
   const isUser  = message.role === 'user';

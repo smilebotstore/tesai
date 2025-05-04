@@ -2,76 +2,126 @@ import { useState } from 'react';
 
 export default function PromoPage() {
   const [promoCode, setPromoCode] = useState('');
-  const [error, setError] = useState('');
-  const [copied, setCopied] = useState(false);
+  const [showCopy, setShowCopy] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const generateCode = async () => {
-    setError('');
-    setPromoCode('');
-    setCopied(false);
+  const handleGenerate = async () => {
+    const hasUsed = localStorage.getItem('promoUsed');
+
+    if (hasUsed) {
+      setMessage('Kamu sudah menggunakan promo code kamu');
+      setPromoCode('');
+      setShowCopy(false);
+      return;
+    }
 
     try {
       const res = await fetch('/api/generate-promo');
       const data = await res.json();
 
-      if (res.ok) {
+      if (data.success) {
         setPromoCode(data.code);
+        setShowCopy(true);
+        localStorage.setItem('promoUsed', 'true');
+        setMessage('');
       } else {
-        setError(data.error);
+        setPromoCode('');
+        setShowCopy(false);
+        setMessage(data.message);
       }
-    } catch (err) {
-      setError('Terjadi kesalahan saat menghubungi server.');
+    } catch (error) {
+      console.error(error);
+      setMessage('Terjadi kesalahan saat membuat promo code.');
     }
   };
 
-  const copyToClipboard = () => {
+  const handleCopy = () => {
     navigator.clipboard.writeText(promoCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    alert('Kode berhasil disalin!');
+  };
+
+  const handleContact = () => {
+    window.open('https://wa.me/601160643471', '_blank');
   };
 
   return (
     <div style={{
       backgroundColor: 'black',
-      color: 'white',
       minHeight: '100vh',
+      padding: '40px',
+      color: 'white',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
-      fontFamily: 'Arial, sans-serif',
-      padding: '20px',
+      justifyContent: 'center'
     }}>
-      <h1 style={{ fontSize: '2em', color: 'white', marginBottom: '30px' }}>Smile AI Promo Code</h1>
+      <h1 style={{
+        fontSize: '32px',
+        fontWeight: 'bold',
+        color: 'white',
+        marginBottom: '40px'
+      }}>
+        <span style={{ backgroundColor: 'white', color: 'black', padding: '10px 20px', borderRadius: '5px' }}>
+          Smile AI Promo Code
+        </span>
+      </h1>
 
-      <button onClick={generateCode} style={buttonStyle}>Generate Kode</button>
-      <a href="https://wa.me/601160643471" style={{ ...buttonStyle, backgroundColor: '#25D366', marginTop: '10px' }}>
-        Hubungi Kami
-      </a>
+      <button onClick={handleGenerate} style={{
+        padding: '12px 24px',
+        fontSize: '16px',
+        backgroundColor: '#4CAF50',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        marginBottom: '20px'
+      }}>
+        Generate Kode
+      </button>
 
       {promoCode && (
-        <div style={{ marginTop: '30px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '1.5em', color: 'yellow' }}>{promoCode}</h2>
-          <button onClick={copyToClipboard} style={{ ...buttonStyle, marginTop: '10px' }}>
-            {copied ? 'Disalin!' : 'Salin Kode'}
-          </button>
+        <div style={{ marginBottom: '20px' }}>
+          <p style={{ fontSize: '24px', letterSpacing: '2px' }}>{promoCode}</p>
+          {showCopy && (
+            <button onClick={handleCopy} style={{
+              marginTop: '10px',
+              padding: '8px 16px',
+              fontSize: '14px',
+              backgroundColor: '#2196F3',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer'
+            }}>
+              Copy
+            </button>
+          )}
         </div>
       )}
 
-      {error && (
-        <div style={{ marginTop: '20px', color: 'red', fontWeight: 'bold' }}>{error}</div>
+      {message && (
+        <div style={{
+          backgroundColor: '#f44336',
+          color: 'white',
+          padding: '10px 20px',
+          borderRadius: '5px',
+          marginBottom: '20px'
+        }}>
+          {message}
+        </div>
       )}
+
+      <button onClick={handleContact} style={{
+        padding: '10px 20px',
+        fontSize: '16px',
+        backgroundColor: '#25D366',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer'
+      }}>
+        Hubungi Kami
+      </button>
     </div>
   );
-}
-
-const buttonStyle = {
-  backgroundColor: '#ffffff',
-  color: 'black',
-  border: 'none',
-  padding: '12px 20px',
-  fontSize: '16px',
-  cursor: 'pointer',
-  borderRadius: '8px',
-  fontWeight: 'bold',
-};
+          }

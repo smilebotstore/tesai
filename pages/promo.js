@@ -46,52 +46,54 @@ export default function PromoPage() {
 
   return (
     <div style={{
-      backgroundColor: 'black',
+      backgroundColor: '#0f0f0f',
       minHeight: '100vh',
       padding: '40px',
       color: 'white',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      fontFamily: 'sans-serif',
     }}>
       <h1 style={{
-        fontSize: '32px',
-        fontWeight: 'bold',
-        color: 'white',
-        marginBottom: '40px'
+        fontSize: '36px',
+        fontWeight: '700',
+        textAlign: 'center',
+        marginBottom: '60px',
+        lineHeight: '1.2',
       }}>
-        <span style={{ backgroundColor: 'white', color: 'black', padding: '10px 20px', borderRadius: '5px' }}>
-          Smile AI Promo Code
-        </span>
+        Smile Store<br />Promo Code
       </h1>
 
       <button onClick={handleGenerate} style={{
-        padding: '12px 24px',
+        width: '260px',
+        padding: '16px',
         fontSize: '16px',
-        backgroundColor: '#4CAF50',
+        fontWeight: '500',
+        backgroundColor: '#1f1f1f',
         color: 'white',
         border: 'none',
-        borderRadius: '5px',
+        borderRadius: '16px',
+        marginBottom: '20px',
         cursor: 'pointer',
-        marginBottom: '20px'
       }}>
         Generate Kode
       </button>
 
       {promoCode && (
-        <div style={{ marginBottom: '20px' }}>
-          <p style={{ fontSize: '24px', letterSpacing: '2px' }}>{promoCode}</p>
+        <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+          <p style={{ fontSize: '20px', letterSpacing: '2px' }}>{promoCode}</p>
           {showCopy && (
             <button onClick={handleCopy} style={{
               marginTop: '10px',
-              padding: '8px 16px',
+              padding: '10px 20px',
               fontSize: '14px',
-              backgroundColor: '#2196F3',
+              backgroundColor: '#3a3a3a',
               color: 'white',
               border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer'
+              borderRadius: '12px',
+              cursor: 'pointer',
             }}>
               Copy
             </button>
@@ -104,24 +106,28 @@ export default function PromoPage() {
           backgroundColor: '#f44336',
           color: 'white',
           padding: '10px 20px',
-          borderRadius: '5px',
-          marginBottom: '20px'
+          borderRadius: '8px',
+          marginBottom: '20px',
+          textAlign: 'center',
+          maxWidth: '300px',
         }}>
           {message}
         </div>
       )}
 
       <button onClick={handleContact} style={{
-        padding: '10px 20px',
+        width: '260px',
+        padding: '16px',
         fontSize: '16px',
-        backgroundColor: '#25D366',
+        fontWeight: '500',
+        backgroundColor: '#0f0f0f',
         color: 'white',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer'
+        border: '2px solid white',
+        borderRadius: '16px',
+        cursor: 'pointer',
       }}>
         Hubungi Kami
       </button>
     </div>
   );
-          }
+}

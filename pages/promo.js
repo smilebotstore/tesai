@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 export default function PromoPage() {
   const [promoCode, setPromoCode] = useState('');
@@ -6,6 +7,7 @@ export default function PromoPage() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
+  const router = useRouter();
 
   const handleGenerate = async () => {
     setButtonClicked(true);
@@ -51,6 +53,10 @@ export default function PromoPage() {
 
   const handleContact = () => {
     window.open('https://wa.me/601160643471', '_blank');
+  };
+
+  const handleBackToHome = () => {
+    router.push('/');
   };
 
   return (
@@ -210,6 +216,22 @@ export default function PromoPage() {
       }}>
         Hubungi Kami
       </button>
+
+      {/* Tombol Back To Home */}
+      <button onClick={handleBackToHome} style={{
+        width: '260px',
+        padding: '16px',
+        fontSize: '16px',
+        fontWeight: '500',
+        backgroundColor: '#0f0f0f',
+        color: 'white',
+        border: '2px solid white',
+        borderRadius: '16px',
+        cursor: 'pointer',
+        marginTop: '16px'
+      }}>
+        Back To Home
+      </button>
     </div>
   );
-}
+          }

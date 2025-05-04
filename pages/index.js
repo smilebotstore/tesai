@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
-import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X } from 'lucide-react';
+import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X, Gift } from 'lucide-react';
 
 const ChatBubble = ({ message }) => {
-  const isUser  = message.role === 'user';
+  const isUser = message.role === 'user';
   return (
-    <div className={`flex ${isUser  ? 'justify-end' : 'justify-start'} mb-2`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}>
       <div
         className={`max-w-[80%] px-4 py-2 rounded-2xl break-words whitespace-pre-wrap text-[15px] leading-[1.5] font-normal ${
-          isUser  ? 'bg-green-600 text-white rounded-br-none' : 'bg-gray-700 text-white rounded-bl-none'
+          isUser ? 'bg-green-600 text-white rounded-br-none' : 'bg-gray-700 text-white rounded-bl-none'
         }`}
       >
         <div>{message.content}</div>
@@ -40,9 +40,7 @@ const Dot = ({ delay = 0 }) => (
 );
 
 export default function Home() {
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Halo, saya Smile AI!' },
-  ]);
+  const [messages, setMessages] = useState([{ role: 'assistant', content: 'Halo, saya Smile AI!' }]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [imageFile, setImageFile] = useState(null);
@@ -50,12 +48,9 @@ export default function Home() {
   const inputRef = useRef(null);
   const endOfMessagesRef = useRef(null);
   const overlayRef = useRef(null);
-  
-  // State untuk menyimpan session sebelumnya
   const [previousSessions, setPreviousSessions] = useState([]);
 
   useEffect(() => {
-    // Mengambil session sebelumnya dari localStorage saat komponen dimuat
     const storedSessions = JSON.parse(localStorage.getItem('chatSessions')) || [];
     setPreviousSessions(storedSessions);
   }, []);
@@ -95,13 +90,11 @@ export default function Home() {
   };
 
   const startNewSession = () => {
-    // Simpan session sebelumnya ke localStorage jika ada pesan lebih dari satu
     if (messages.length > 1) {
       const updatedSessions = [...previousSessions, messages];
       setPreviousSessions(updatedSessions);
       localStorage.setItem('chatSessions', JSON.stringify(updatedSessions));
     }
-    // Reset chat
     setMessages([{ role: 'assistant', content: 'Halo, saya Smile AI!' }]);
     setInput('');
     setImageFile(null);
@@ -165,22 +158,12 @@ export default function Home() {
   return (
     <>
       <Head>
-    <title>Smile Bot AI</title>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
+        <title>Smile Bot AI</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
       </Head>
-      <div
-        className="flex h-screen bg-gray-900 text-white font-sans relative"
-        style={{ fontFamily: 'Inter, sans-serif' }}
-      >
-        {/* Overlay + Drawer */}
+      <div className="flex h-screen bg-gray-900 text-white font-sans relative" style={{ fontFamily: 'Inter, sans-serif' }}>
         {drawerOpen && (
-          <div
-            ref={overlayRef}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 flex"
-          >
+          <div ref={overlayRef} className="fixed inset-0 bg-black bg-opacity-50 z-40 flex">
             <div className="bg-gray-800 w-56 h-full p-4 border-r border-gray-700 z-50 flex flex-col">
               <button
                 onClick={startNewSession}
@@ -188,17 +171,26 @@ export default function Home() {
               >
                 + Obrolan Baru
               </button>
+
+              <button
+                onClick={() => {
+                  setDrawerOpen(false);
+                  window.location.href = '/promo';
+                }}
+                className="w-full text-left text-sm font-semibold px-3 py-2 mt-3 border border-gray-600 rounded-md text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+              >
+                <Gift size={16} />
+                Promo Code Smile Store
+              </button>
+
               <hr className="border-gray-700 mt-4" />
-              {/* Daftar session sebelumnya */}
+
               <div className="mt-4 flex-1 overflow-auto">
                 {previousSessions.length === 0 && (
                   <p className="text-gray-500 text-sm text-center mt-2">Belum ada sesi sebelumnya</p>
                 )}
                 {previousSessions.map((session, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between mb-2"
-                  >
+                  <div key={index} className="flex items-center justify-between mb-2">
                     <button
                       onClick={() => loadSession(session)}
                       className="text-left text-sm font-semibold px-3 py-2 border border-gray-600 rounded-md text-gray-300 hover:bg-gray-700 flex-1 truncate"
@@ -221,19 +213,14 @@ export default function Home() {
           </div>
         )}
 
-        {/* Main Content */}
         <div className="flex flex-col flex-1 h-full">
           <header className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex justify-between items-center relative">
             <button onClick={() => setDrawerOpen(true)}>
               <Menu className="text-white" />
             </button>
             <span className="text-lg font-semibold absolute left-1/2 transform -translate-x-1/2">
-            
-          Smile Bot AI
-      </span>
-              
-            
-            
+              Smile Bot AI
+            </span>
             <a
               href="/about.html"
               className="flex items-center gap-1 font-bold text-sm px-3 py-1.5 rounded-md border border-gray-600 text-gray-300 hover:bg-gray-700"
@@ -257,15 +244,9 @@ export default function Home() {
             <div ref={endOfMessagesRef} />
           </main>
 
-          <form
-            onSubmit={handleSubmit}
-            className="p-4 bg-gray-800 border-t border-gray-700"
-          >
+          <form onSubmit={handleSubmit} className="p-4 bg-gray-800 border-t border-gray-700">
             <div className="relative flex items-end gap-2">
-              <label
-                htmlFor="image-upload"
-                className="text-gray-400 hover:text-white cursor-pointer p-2"
-              >
+              <label htmlFor="image-upload" className="text-gray-400 hover:text-white cursor-pointer p-2">
                 <Paperclip size={20} />
               </label>
               <input
@@ -317,4 +298,4 @@ export default function Home() {
       </div>
     </>
   );
-}
+      }

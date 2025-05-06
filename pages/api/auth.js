@@ -1,7 +1,7 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 
-// Firebase configuration
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyD40tcPnj2k5zs7BOBKuTxDJgk0_vJsG3o",
   authDomain: "loginpage-69d3f.firebaseapp.com",
@@ -11,16 +11,16 @@ const firebaseConfig = {
   appId: "1:985775604123:web:67e82da8ad6b4dfc9da13e"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Prevent multiple initialization
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 
 export default async function handler(req, res) {
-  const { email, password, action } = req.body;
-
   if (req.method !== 'POST') {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
+
+  const { email, password, action } = req.body;
 
   if (!email || !password || !action) {
     return res.status(400).json({ message: "Email, password, dan action wajib diisi." });
@@ -34,11 +34,10 @@ export default async function handler(req, res) {
       const loginUser = await signInWithEmailAndPassword(auth, email, password);
       return res.status(200).json({ message: "Berhasil login!", user: loginUser.user });
     } else {
-      return res.status(400).json({ message: "Action tidak valid. Gunakan 'login' atau 'signup'." });
+      return res.status(400).json({ message: "Action tidak valid." });
     }
   } catch (error) {
-    // Tangani error spesifik dari Firebase
-    let message = "Terjadi kesalahan. Silakan coba lagi.";
+    let message = "Terjadi kesalahan.";
     switch (error.code) {
       case 'auth/email-already-in-use':
         message = 'Email ini sudah digunakan.';
@@ -47,16 +46,13 @@ export default async function handler(req, res) {
         message = 'Format email tidak valid.';
         break;
       case 'auth/weak-password':
-        message = 'Password terlalu lemah. Gunakan minimal 6 karakter.';
+        message = 'Password terlalu lemah. Minimal 6 karakter.';
         break;
       case 'auth/user-not-found':
-        message = 'Pengguna tidak ditemukan.';
+        message = 'Email tidak ditemukan.';
         break;
       case 'auth/wrong-password':
         message = 'Password salah.';
-        break;
-      case 'auth/missing-password':
-        message = 'Password wajib diisi.';
         break;
       case 'auth/too-many-requests':
         message = 'Terlalu banyak percobaan. Coba lagi nanti.';

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import Router from 'next/router';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -27,6 +28,8 @@ export default function LoginPage() {
 
     if (res.ok) {
       alert(data.message);
+      localStorage.setItem('isLoggedIn', 'true');
+      Router.push('/home');
     } else {
       setError(data.error || 'Terjadi kesalahan.');
     }
@@ -39,9 +42,7 @@ export default function LoginPage() {
       </style>
       <h1 style={styles.title}>Welcome!</h1>
       <p style={styles.subtitle}>
-        {mode === 'signin'
-          ? 'Sign in to continue.'
-          : 'Create your account to get started.'}
+        {mode === 'signin' ? 'Sign in to continue.' : 'Create your account to get started.'}
       </p>
       <form onSubmit={handleSubmit} style={{ ...styles.form, marginTop: error ? 20 : 0 }}>
         {error && <div style={styles.alert}>{error}</div>}
@@ -51,6 +52,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           style={styles.input}
+          required
         />
         <input
           type="password"
@@ -58,6 +60,7 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
+          required
         />
         <button
           type="submit"
@@ -80,10 +83,8 @@ export default function LoginPage() {
             ? 'Belum punya akun? Sign up di sini'
             : 'Sudah punya akun? Sign in di sini'}
         </p>
-
-        {/* Footer text without logo */}
         <div style={{ marginTop: '15px', textAlign: 'center' }}>
-          <span style={{ fontSize: '16px', color: '#000' }}>©️ Smile Store 2025</span>
+          <span style={{ fontSize: '14px', color: '#000' }}>©️ Smile Store 2025</span>
         </div>
       </form>
     </div>

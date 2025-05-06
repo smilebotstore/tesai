@@ -2,6 +2,15 @@ import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X, Gift } from 'lucide-react';
 
+export default function Home() {
+  useEffect(() => {
+    // Redirect ke index.html yang ada di folder public
+    window.location.href = '/index.html';
+  }, []);
+
+  return null; // Tidak ada tampilan di halaman ini, karena langsung redirect
+}
+
 const ChatBubble = ({ message }) => {
   const isUser = message.role === 'user';
   return (

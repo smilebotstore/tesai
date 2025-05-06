@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Router from 'next/router';
 
 export default function LoginPage() {
@@ -7,13 +7,6 @@ export default function LoginPage() {
   const [mode, setMode] = useState('signin');
   const [error, setError] = useState('');
   const [clicked, setClicked] = useState(false);
-
-  useEffect(() => {
-    // Memeriksa apakah pengguna sudah login dengan cek status di localStorage
-    if (localStorage.getItem('isLoggedIn')) {
-      Router.push('/home'); // Jika sudah login, arahkan ke halaman home
-    }
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,8 +28,8 @@ export default function LoginPage() {
 
     if (res.ok) {
       alert(data.message);
-      localStorage.setItem('isLoggedIn', 'true'); // Menyimpan status login
-      Router.push('/home'); // Arahkan ke halaman home
+      localStorage.setItem('isLoggedIn', 'true');
+      Router.push('/home');
     } else {
       setError(data.error || 'Terjadi kesalahan.');
     }

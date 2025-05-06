@@ -5,32 +5,31 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('signin');
   const [error, setError] = useState('');
-  const [btnClicked, setBtnClicked] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setClicked(true);
     setError('');
-    if (password.length < 6) {
-      setError('Password harus minimal 6 karakter');
-      return;
-    }
-
-    setBtnClicked(true);
-    setTimeout(() => setBtnClicked(false), 200); // reset animasi
 
     const res = await fetch('/api/auth.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        type: mode,
+        action: mode === 'signin' ? 'login' : 'signup',
         email,
-        password
+        password,
       }),
     });
 
     const data = await res.json();
-    alert(data.message || (mode === 'signin' ? 'Login berhasil!' : 'Akun berhasil dibuat!'));
+    setClicked(false);
+
+    if (res.ok) {
+      alert(data.message);
+    } else {
+      setError(data.message || 'Terjadi kesalahan.');
+    }
   };
 
   return (
@@ -40,10 +39,12 @@ export default function LoginPage() {
       </style>
       <h1 style={styles.title}>Welcome!</h1>
       <p style={styles.subtitle}>
-        {mode === 'signin' ? 'Sign in to continue.' : 'Create your account to get started.'}
+        {mode === 'signin'
+          ? 'Sign in to continue.'
+          : 'Create your account to get started.'}
       </p>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        {error && <div style={styles.error}>{error}</div>}
+      <form onSubmit={handleSubmit} style={{ ...styles.form, marginTop: error ? 20 : 0 }}>
+        {error && <div style={styles.alert}>{error}</div>}
         <input
           type="email"
           placeholder="Email"
@@ -62,14 +63,22 @@ export default function LoginPage() {
           type="submit"
           style={{
             ...styles.button,
-            transform: btnClicked ? 'scale(0.95)' : 'scale(1)',
-            transition: 'transform 0.2s ease',
+            transform: clicked ? 'scale(0.98)' : 'scale(1)',
+            transition: 'transform 0.1s ease-in-out',
           }}
         >
           {mode === 'signin' ? 'SIGN IN' : 'SIGN UP'}
         </button>
-        <p onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')} style={styles.toggle}>
-          {mode === 'signin' ? 'Belum punya akun? Sign up di sini' : 'Sudah punya akun? Sign in di sini'}
+        <p
+          onClick={() => {
+            setError('');
+            setMode(mode === 'signin' ? 'signup' : 'signin');
+          }}
+          style={styles.toggle}
+        >
+          {mode === 'signin'
+            ? 'Belum punya akun? Sign up di sini'
+            : 'Sudah punya akun? Sign in di sini'}
         </p>
       </form>
     </div>
@@ -103,6 +112,7 @@ const styles = {
     width: '80%',
     maxWidth: '400px',
     boxShadow: '0 0 15px rgba(0,0,0,0.1)',
+    color: 'black',
   },
   input: {
     marginBottom: '15px',
@@ -110,7 +120,6 @@ const styles = {
     borderRadius: '10px',
     border: '1px solid #ccc',
     fontSize: '16px',
-    color: 'black',
     fontFamily: "'Cal Sans', sans-serif",
   },
   button: {
@@ -131,10 +140,13 @@ const styles = {
     cursor: 'pointer',
     fontWeight: 'bold',
   },
-  error: {
+  alert: {
+    backgroundColor: '#ffdddd',
+    color: '#d8000c',
+    padding: '10px',
+    borderRadius: '10px',
     marginBottom: '15px',
-    color: 'red',
-    fontWeight: 'bold',
+    fontSize: '14px',
     textAlign: 'center',
   },
 };

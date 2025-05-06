@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 
-export default function Login() {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [mode, setMode] = useState('signin'); // signin atau signup
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const res = await fetch('/api/auth.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({
+        type: mode,
+        email,
+        password
+      }),
     });
 
     const data = await res.json();
-    if (data.success) {
-      alert('Login successful!');
-      // redirect or store token
-    } else {
-      alert(data.message || 'Login failed');
-    }
+    alert(data.message || (mode === 'signin' ? 'Login berhasil!' : 'Akun berhasil dibuat!'));
   };
 
   return (
@@ -27,23 +28,37 @@ export default function Login() {
         {`@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');`}
       </style>
       <h1 style={styles.title}>Welcome!</h1>
-      <p style={styles.subtitle}>Create your account to get started.</p>
-      <form onSubmit={handleLogin} style={styles.form}>
+      <p style={styles.subtitle}>
+        {mode === 'signin'
+          ? 'Sign in to continue.'
+          : 'Create your account to get started.'}
+      </p>
+      <form onSubmit={handleSubmit} style={styles.form}>
         <input
-          style={styles.input}
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          style={styles.input}
         />
         <input
-          style={styles.input}
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          style={styles.input}
         />
-        <button type="submit" style={styles.button}>SIGN IN</button>
+        <button type="submit" style={styles.button}>
+          {mode === 'signin' ? 'SIGN IN' : 'SIGN UP'}
+        </button>
+        <p
+          onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
+          style={styles.toggle}
+        >
+          {mode === 'signin'
+            ? 'Belum punya akun? Sign up di sini'
+            : 'Sudah punya akun? Sign in di sini'}
+        </p>
       </form>
     </div>
   );
@@ -96,5 +111,12 @@ const styles = {
     fontWeight: 'bold',
     cursor: 'pointer',
     fontFamily: "'Cal Sans', sans-serif",
+  },
+  toggle: {
+    marginTop: '15px',
+    textAlign: 'center',
+    color: '#2196F3',
+    cursor: 'pointer',
+    fontWeight: 'bold',
   },
 };

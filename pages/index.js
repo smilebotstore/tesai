@@ -1,20 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X, Gift } from 'lucide-react';
-import { UserRouter } from 'next/router';
-
-export async function getServerSideProps() {
-  return {
-    redirect: {
-      destination: '/login',
-      permanent: false,
-    },
-  };
-}
-
-export default function RedirectToLogin() {
-  return null;
-}
 
 
 const ChatBubble = ({ message }) => {

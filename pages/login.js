@@ -83,7 +83,7 @@ export default function LoginPage() {
 
         {/* Footer text without logo */}
         <div style={{ marginTop: '15px', textAlign: 'center' }}>
-          <span style={{ fontSize: '14px', color: '#000' }}>©️ Smile Store 2025</span>
+          <span style={{ fontSize: '20px', color: '#000' }}>©️ Smile Store 2025</span>
         </div>
       </form>
     </div>

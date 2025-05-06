@@ -165,9 +165,9 @@ const styles = {
     justifyContent: 'center',
   },
   logo: {
-    width: '24px',
-    height: '24px',
-    marginRight: '8px',
+    width: '40px',
+    height: '40px',
+    marginRight: '10px',
   },
   footerText: {
     fontSize: '13px',

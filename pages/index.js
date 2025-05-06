@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Router from 'next/router';
 
 export default function LoginPage() {
@@ -7,20 +7,6 @@ export default function LoginPage() {
   const [mode, setMode] = useState('signin');
   const [error, setError] = useState('');
   const [clicked, setClicked] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (isClient) {
-      const isLoggedIn = localStorage.getItem('isLoggedIn');
-      if (isLoggedIn === 'true') {
-        Router.push('/home');
-      }
-    }
-  }, [isClient]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

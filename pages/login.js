@@ -38,7 +38,7 @@ export default function LoginPage() {
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');`}
       </style>
-      <h1 style={styles.title}>Welcome!</h1>
+      <h1 style={styles.title}>Welcome To Smile AI!</h1>
       <p style={styles.subtitle}>
         {mode === 'signin'
           ? 'Sign in to continue.'

@@ -3,15 +3,18 @@ import Head from 'next/head';
 import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X, Gift } from 'lucide-react';
 import { UserRouter } from 'next/router';
 
-export default function Home() {
-  const router = useRouter();
+// pages/index.js
+export async function getServerSideProps() {
+  return {
+    redirect: {
+      destination: '/login',
+      permanent: false,
+    },
+  };
+}
 
-  useEffect(() => {
-    // Redirect ke index.html yang ada di folder public
-    window.location.href = '/index.html';
-  }, [router]);
-
-  return null; // Tidak ada tampilan di halaman ini, karena langsung redirect
+export default function RedirectToLogin() {
+  return null;
 }
 
 const ChatBubble = ({ message }) => {

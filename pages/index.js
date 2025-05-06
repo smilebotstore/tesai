@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Router from 'next/router';
+import Head from 'next/head';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 export default function LoginPage() {
@@ -38,71 +39,76 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={styles.container}>
-      <style>
-        {`@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');`}
-      </style>
-      <h1 style={styles.title}>Welcome To Smile AI!</h1>
-      <p style={styles.subtitle}>
-        {mode === 'signin' ? 'Sign In To Continue.' : 'Create Your Account To Get Started.'}
-      </p>
-      <form onSubmit={handleSubmit} style={{ ...styles.form, marginTop: error ? 20 : 0 }}>
-        {error && <div style={styles.alert}>{error}</div>}
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-          required
-        />
-        <div style={{ position: 'relative' }}>
+    <>
+      <Head>
+        <title>Login - Smile AI</title>
+      </Head>
+      <div style={styles.container}>
+        <style>
+          {`@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');`}
+        </style>
+        <h1 style={styles.title}>Welcome To Smile AI!</h1>
+        <p style={styles.subtitle}>
+          {mode === 'signin' ? 'Sign In To Continue.' : 'Create Your Account To Get Started.'}
+        </p>
+        <form onSubmit={handleSubmit} style={{ ...styles.form, marginTop: error ? 20 : 0 }}>
+          {error && <div style={styles.alert}>{error}</div>}
           <input
-            type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ ...styles.input, paddingRight: '40px' }}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={styles.input}
             required
           />
-          <div
-            onClick={() => setShowPassword(!showPassword)}
+          <div style={{ position: 'relative' }}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{ ...styles.input, paddingRight: '40px' }}
+              required
+            />
+            <div
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                cursor: 'pointer',
+                color: '#999',
+                fontSize: '20px',
+              }}
+            >
+              {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+            </div>
+          </div>
+          <button
+            type="submit"
             style={{
-              position: 'absolute',
-              right: '10px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              cursor: 'pointer',
-              color: '#999',
-              fontSize: '20px',
+              ...styles.button,
+              transform: clicked ? 'scale(0.98)' : 'scale(1)',
+              transition: 'transform 0.1s ease-in-out',
             }}
           >
-            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-          </div>
-        </div>
-        <button
-          type="submit"
-          style={{
-            ...styles.button,
-            transform: clicked ? 'scale(0.98)' : 'scale(1)',
-            transition: 'transform 0.1s ease-in-out',
-          }}
-        >
-          {mode === 'signin' ? 'SIGN IN' : 'SIGN UP'}
-        </button>
-        <p
-          onClick={() => {
-            setError('');
-            setMode(mode === 'signin' ? 'signup' : 'signin');
-          }}
-          style={styles.toggle}
-        >
-          {mode === 'signin'
-            ? 'Belum Punya Akun? Sign Up Di Sini'
-            : 'Sudah Punya Akun? Sign In Di Sini'}
-        </p>
-      </form>
-    </div>
+            {mode === 'signin' ? 'SIGN IN' : 'SIGN UP'}
+          </button>
+          <p
+            onClick={() => {
+              setError('');
+              setMode(mode === 'signin' ? 'signup' : 'signin');
+            }}
+            style={styles.toggle}
+          >
+            {mode === 'signin'
+              ? 'Belum Punya Akun? Sign Up Di Sini'
+              : 'Sudah Punya Akun? Sign In Di Sini'}
+          </p>
+        </form>
+      </div>
+    </>
   );
 }
 
@@ -113,7 +119,7 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     paddingTop: '50px',
-    backgroundColor: '#121212', // Dark mode
+    backgroundColor: '#121212',
     height: '100vh',
     color: '#fff',
   },

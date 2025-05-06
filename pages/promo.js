@@ -56,7 +56,7 @@ export default function PromoPage() {
   };
 
   const handleBackToHome = () => {
-    router.push('/');
+    router.push('/home');
   };
 
   return (

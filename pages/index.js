@@ -101,9 +101,6 @@ export default function LoginPage() {
             ? 'Belum punya akun? Sign up di sini'
             : 'Sudah punya akun? Sign in di sini'}
         </p>
-        <div style={{ marginTop: '15px', textAlign: 'center' }}>
-          <span style={{ fontSize: '14px', color: '#fff' }}>©️ Smile Store 2025</span>
-        </div>
       </form>
     </div>
   );

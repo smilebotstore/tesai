@@ -51,7 +51,6 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           style={styles.input}
-          required
         />
         <input
           type="password"
@@ -59,7 +58,6 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
-          required
         />
         <button
           type="submit"
@@ -83,10 +81,9 @@ export default function LoginPage() {
             : 'Sudah punya akun? Sign in di sini'}
         </p>
 
-        {/* Footer with logo and ©️ text */}
-        <div style={styles.footer}>
-          <img src="/logo.png" alt="logo" style={styles.logo} />
-          <span style={styles.footerText}>©️ Smile Store 2025</span>
+        {/* Footer text without logo */}
+        <div style={{ marginTop: '15px', textAlign: 'center' }}>
+          <span style={{ fontSize: '14px', color: '#000' }}>©️ Smile Store 2025</span>
         </div>
       </form>
     </div>
@@ -121,7 +118,6 @@ const styles = {
     maxWidth: '400px',
     boxShadow: '0 0 15px rgba(0,0,0,0.1)',
     color: 'black',
-    position: 'relative',
   },
   input: {
     marginBottom: '15px',
@@ -157,20 +153,5 @@ const styles = {
     marginBottom: '15px',
     fontSize: '14px',
     textAlign: 'center',
-  },
-  footer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: '30px',
-    justifyContent: 'center',
-  },
-  logo: {
-    width: '40px',
-    height: '40px',
-    marginRight: '10px',
-  },
-  footerText: {
-    fontSize: '13px',
-    color: '#000',
   },
 };

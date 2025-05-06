@@ -1,12 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Router from 'next/router';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [mode, setMode] = useState('signin');
   const [error, setError] = useState('');
   const [clicked, setClicked] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      if (isLoggedIn === 'true') {
+        Router.push('/home');
+      }
+    }
+  }, [isClient]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,9 +56,9 @@ export default function LoginPage() {
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');`}
       </style>
-      <h1 style={styles.title}>Welcome To Smile AI!</h1>
+      <h1 style={styles.title}>Welcome!</h1>
       <p style={styles.subtitle}>
-        {mode === 'signin' ? 'Sign In To Continue.' : 'Create Your Account To Get Started.'}
+        {mode === 'signin' ? 'Sign in to continue.' : 'Create your account to get started.'}
       </p>
       <form onSubmit={handleSubmit} style={{ ...styles.form, marginTop: error ? 20 : 0 }}>
         {error && <div style={styles.alert}>{error}</div>}
@@ -54,14 +70,24 @@ export default function LoginPage() {
           style={styles.input}
           required
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-          required
-        />
+        <div style={styles.passwordContainer}>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ ...styles.input, marginBottom: 0 }}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={styles.eyeButton}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
+        </div>
+        <div style={{ marginBottom: '15px' }} />
         <button
           type="submit"
           style={{
@@ -80,11 +106,11 @@ export default function LoginPage() {
           style={styles.toggle}
         >
           {mode === 'signin'
-            ? 'Belum Punya Akun? Sign Up Di Sini'
-            : 'Sudah Punya Akun? Sign In Di Sini'}
+            ? 'Belum punya akun? Sign up di sini'
+            : 'Sudah punya akun? Sign in di sini'}
         </p>
         <div style={{ marginTop: '15px', textAlign: 'center' }}>
-          <span style={{ fontSize: '16px', color: '#000' }}>©️ Smile Store 2025</span>
+          <span style={{ fontSize: '14px', color: '#fff' }}>©️ Smile Store 2025</span>
         </div>
       </form>
     </div>
@@ -98,7 +124,7 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     paddingTop: '50px',
-    backgroundColor: '#2196F3',
+    backgroundColor: '#121212',
     height: '100vh',
     color: '#fff',
   },
@@ -127,10 +153,27 @@ const styles = {
     border: '1px solid #ccc',
     fontSize: '16px',
     fontFamily: "'Cal Sans', sans-serif",
+    width: '100%',
+    boxSizing: 'border-box',
+  },
+  passwordContainer: {
+    position: 'relative',
+    width: '100%',
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: '10px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '18px',
+    color: '#555',
   },
   button: {
     padding: '15px',
-    backgroundColor: '#2196F3',
+    backgroundColor: '#000',
     color: '#fff',
     border: 'none',
     borderRadius: '10px',
@@ -142,7 +185,7 @@ const styles = {
   toggle: {
     marginTop: '15px',
     textAlign: 'center',
-    color: '#2196F3',
+    color: '#000',
     cursor: 'pointer',
     fontWeight: 'bold',
   },

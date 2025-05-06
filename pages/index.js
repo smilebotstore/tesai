@@ -27,10 +27,11 @@ export default function LoginPage() {
     setClicked(false);
 
     if (res.ok) {
-      alert(data.message);
+      // Menyimpan status login ke localStorage
       localStorage.setItem('isLoggedIn', 'true');
       Router.push('/home');
     } else {
+      // Menampilkan pesan error jika login/signup gagal
       setError(data.error || 'Terjadi kesalahan.');
     }
   };

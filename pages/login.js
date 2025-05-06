@@ -1,4 +1,3 @@
-// pages/login.js
 import React, { useState } from 'react';
 
 export default function LoginPage() {
@@ -38,11 +37,11 @@ export default function LoginPage() {
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');`}
       </style>
-      <h1 style={styles.title}>Welcome To Smile AI!</h1>
+      <h1 style={styles.title}>Welcome!</h1>
       <p style={styles.subtitle}>
         {mode === 'signin'
-          ? 'Sign In To Continue.'
-          : 'Create Your Account To Get Started.'}
+          ? 'Sign in to continue.'
+          : 'Create your account to get started.'}
       </p>
       <form onSubmit={handleSubmit} style={{ ...styles.form, marginTop: error ? 20 : 0 }}>
         {error && <div style={styles.alert}>{error}</div>}
@@ -80,9 +79,15 @@ export default function LoginPage() {
           style={styles.toggle}
         >
           {mode === 'signin'
-            ? 'Belum Punya Akun? Sign Up Di Sini'
-            : 'Sudah Punya Akun? Sign In Di Sini'}
+            ? 'Belum punya akun? Sign up di sini'
+            : 'Sudah punya akun? Sign in di sini'}
         </p>
+
+        {/* Footer with logo and ©️ text */}
+        <div style={styles.footer}>
+          <img src="/logo.png" alt="logo" style={styles.logo} />
+          <span style={styles.footerText}>©️ Smile Store 2025</span>
+        </div>
       </form>
     </div>
   );
@@ -116,6 +121,7 @@ const styles = {
     maxWidth: '400px',
     boxShadow: '0 0 15px rgba(0,0,0,0.1)',
     color: 'black',
+    position: 'relative',
   },
   input: {
     marginBottom: '15px',
@@ -151,5 +157,20 @@ const styles = {
     marginBottom: '15px',
     fontSize: '14px',
     textAlign: 'center',
+  },
+  footer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: '30px',
+    justifyContent: 'center',
+  },
+  logo: {
+    width: '24px',
+    height: '24px',
+    marginRight: '8px',
+  },
+  footerText: {
+    fontSize: '13px',
+    color: '#000',
   },
 };

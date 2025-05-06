@@ -18,26 +18,52 @@ const auth = getAuth(app);
 export default async function handler(req, res) {
   const { email, password, action } = req.body;
 
-  if (req.method === 'POST') {
-    try {
-      switch (action) {
-        case 'signup':
-          // Handle user sign up
-          const signupUser = await createUserWithEmailAndPassword(auth, email, password);
-          res.status(200).json({ message: "User created successfully", user: signupUser.user });
-          break;
-        case 'login':
-          // Handle user login
-          const loginUser = await signInWithEmailAndPassword(auth, email, password);
-          res.status(200).json({ message: "User logged in successfully", user: loginUser.user });
-          break;
-        default:
-          res.status(400).json({ error: "Invalid action" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: "Method Not Allowed" });
+  }
+
+  if (!email || !password || !action) {
+    return res.status(400).json({ message: "Email, password, dan action wajib diisi." });
+  }
+
+  try {
+    if (action === 'signup') {
+      const signupUser = await createUserWithEmailAndPassword(auth, email, password);
+      return res.status(200).json({ message: "Akun berhasil dibuat!", user: signupUser.user });
+    } else if (action === 'login') {
+      const loginUser = await signInWithEmailAndPassword(auth, email, password);
+      return res.status(200).json({ message: "Berhasil login!", user: loginUser.user });
+    } else {
+      return res.status(400).json({ message: "Action tidak valid. Gunakan 'login' atau 'signup'." });
     }
-  } else {
-    res.status(405).json({ error: "Method Not Allowed" });
+  } catch (error) {
+    // Tangani error spesifik dari Firebase
+    let message = "Terjadi kesalahan. Silakan coba lagi.";
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        message = 'Email ini sudah digunakan.';
+        break;
+      case 'auth/invalid-email':
+        message = 'Format email tidak valid.';
+        break;
+      case 'auth/weak-password':
+        message = 'Password terlalu lemah. Gunakan minimal 6 karakter.';
+        break;
+      case 'auth/user-not-found':
+        message = 'Pengguna tidak ditemukan.';
+        break;
+      case 'auth/wrong-password':
+        message = 'Password salah.';
+        break;
+      case 'auth/missing-password':
+        message = 'Password wajib diisi.';
+        break;
+      case 'auth/too-many-requests':
+        message = 'Terlalu banyak percobaan. Coba lagi nanti.';
+        break;
+      default:
+        message = error.message;
+    }
+    return res.status(500).json({ message });
   }
 }

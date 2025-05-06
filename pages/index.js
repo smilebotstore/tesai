@@ -3,7 +3,6 @@ import Head from 'next/head';
 import { RotateCcw, Trash2, Send, Info, Paperclip, Menu, X, Gift } from 'lucide-react';
 import { UserRouter } from 'next/router';
 
-// pages/index.js
 export async function getServerSideProps() {
   return {
     redirect: {
@@ -16,6 +15,7 @@ export async function getServerSideProps() {
 export default function RedirectToLogin() {
   return null;
 }
+
 
 const ChatBubble = ({ message }) => {
   const isUser = message.role === 'user';

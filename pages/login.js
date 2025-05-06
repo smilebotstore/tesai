@@ -3,10 +3,21 @@ import React, { useState } from 'react';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [mode, setMode] = useState('signin'); // signin atau signup
+  const [mode, setMode] = useState('signin');
+  const [error, setError] = useState('');
+  const [btnClicked, setBtnClicked] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setError('');
+    if (password.length < 6) {
+      setError('Password harus minimal 6 karakter');
+      return;
+    }
+
+    setBtnClicked(true);
+    setTimeout(() => setBtnClicked(false), 200); // reset animasi
 
     const res = await fetch('/api/auth.js', {
       method: 'POST',
@@ -29,11 +40,10 @@ export default function LoginPage() {
       </style>
       <h1 style={styles.title}>Welcome!</h1>
       <p style={styles.subtitle}>
-        {mode === 'signin'
-          ? 'Sign in to continue.'
-          : 'Create your account to get started.'}
+        {mode === 'signin' ? 'Sign in to continue.' : 'Create your account to get started.'}
       </p>
       <form onSubmit={handleSubmit} style={styles.form}>
+        {error && <div style={styles.error}>{error}</div>}
         <input
           type="email"
           placeholder="Email"
@@ -48,16 +58,18 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
         />
-        <button type="submit" style={styles.button}>
+        <button
+          type="submit"
+          style={{
+            ...styles.button,
+            transform: btnClicked ? 'scale(0.95)' : 'scale(1)',
+            transition: 'transform 0.2s ease',
+          }}
+        >
           {mode === 'signin' ? 'SIGN IN' : 'SIGN UP'}
         </button>
-        <p
-          onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
-          style={styles.toggle}
-        >
-          {mode === 'signin'
-            ? 'Belum punya akun? Sign up di sini'
-            : 'Sudah punya akun? Sign in di sini'}
+        <p onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')} style={styles.toggle}>
+          {mode === 'signin' ? 'Belum punya akun? Sign up di sini' : 'Sudah punya akun? Sign in di sini'}
         </p>
       </form>
     </div>
@@ -118,5 +130,11 @@ const styles = {
     color: '#2196F3',
     cursor: 'pointer',
     fontWeight: 'bold',
+  },
+  error: {
+    marginBottom: '15px',
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 };

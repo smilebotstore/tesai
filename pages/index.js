@@ -1,28 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Router from 'next/router';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [mode, setMode] = useState('signin');
   const [error, setError] = useState('');
   const [clicked, setClicked] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (isClient) {
-      const isLoggedIn = localStorage.getItem('isLoggedIn');
-      if (isLoggedIn === 'true') {
-        Router.push('/home');
-      }
-    }
-  }, [isClient]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,24 +56,30 @@ export default function LoginPage() {
           style={styles.input}
           required
         />
-        <div style={styles.passwordContainer}>
+        <div style={{ position: 'relative' }}>
           <input
             type={showPassword ? 'text' : 'password'}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            style={{ ...styles.input, marginBottom: 0 }}
+            style={{ ...styles.input, paddingRight: '40px' }}
             required
           />
-          <button
-            type="button"
+          <div
             onClick={() => setShowPassword(!showPassword)}
-            style={styles.eyeButton}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              cursor: 'pointer',
+              color: '#999',
+              fontSize: '20px',
+            }}
           >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </button>
+            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+          </div>
         </div>
-        <div style={{ marginBottom: '15px' }} />
         <button
           type="submit"
           style={{
@@ -124,7 +116,7 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     paddingTop: '50px',
-    backgroundColor: '#121212',
+    backgroundColor: '#121212', // Dark mode
     height: '100vh',
     color: '#fff',
   },
@@ -154,22 +146,6 @@ const styles = {
     fontSize: '16px',
     fontFamily: "'Cal Sans', sans-serif",
     width: '100%',
-    boxSizing: 'border-box',
-  },
-  passwordContainer: {
-    position: 'relative',
-    width: '100%',
-  },
-  eyeButton: {
-    position: 'absolute',
-    right: '10px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: '18px',
-    color: '#555',
   },
   button: {
     padding: '15px',

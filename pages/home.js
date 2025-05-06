@@ -36,22 +36,27 @@ export default function Home() {
   const [isTyping, setIsTyping] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [previousSessions, setPreviousSessions] = useState([]);
   const inputRef = useRef(null);
   const endOfMessagesRef = useRef(null);
   const overlayRef = useRef(null);
-  const [previousSessions, setPreviousSessions] = useState([]);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn !== 'true') {
-      router.push('/');
+    setIsClient(true); // Pastikan ini hanya di browser
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      if (isLoggedIn !== 'true') {
+        router.push('/');
+      }
+
+      const storedSessions = JSON.parse(localStorage.getItem('chatSessions')) || [];
+      setPreviousSessions(storedSessions);
     }
-  }, []);
-
-  useEffect(() => {
-    const storedSessions = JSON.parse(localStorage.getItem('chatSessions')) || [];
-    setPreviousSessions(storedSessions);
-  }, []);
+  }, [isClient]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -251,4 +256,4 @@ export default function Home() {
       </div>
     </>
   );
-                         }
+                      }

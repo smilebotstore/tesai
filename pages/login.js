@@ -41,8 +41,8 @@ export default function LoginPage() {
       <h1 style={styles.title}>Welcome To Smile AI!</h1>
       <p style={styles.subtitle}>
         {mode === 'signin'
-          ? 'Sign in to continue.'
-          : 'Create your account to get started.'}
+          ? 'Sign In To Continue.'
+          : 'Create Your Account To Get Started.'}
       </p>
       <form onSubmit={handleSubmit} style={{ ...styles.form, marginTop: error ? 20 : 0 }}>
         {error && <div style={styles.alert}>{error}</div>}
@@ -80,8 +80,8 @@ export default function LoginPage() {
           style={styles.toggle}
         >
           {mode === 'signin'
-            ? 'Belum punya akun? Sign up di sini'
-            : 'Sudah punya akun? Sign in di sini'}
+            ? 'Belum Punya Akun? Sign Up Di Sini'
+            : 'Sudah Punya Akun? Sign In Di Sini'}
         </p>
       </form>
     </div>

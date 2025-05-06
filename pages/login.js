@@ -1,152 +1,147 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [mode, setMode] = useState('signin');
-  const [error, setError] = useState('');
-  const [clicked, setClicked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setClicked(true);
-    setError('');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          action: isSignUp ? "signup" : "login",
+        }),
+      });
 
-    const res = await fetch('/api/auth.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: mode === 'signin' ? 'login' : 'signup',
-        email,
-        password,
-      }),
-    });
-
-    const data = await res.json();
-    setClicked(false);
-
-    if (res.ok) {
-      alert(data.message);
-    } else {
-      setError(data.message || 'Terjadi kesalahan.');
+      const data = await res.json();
+      if (res.status === 200) {
+        alert("Authentication successful");
+      } else {
+        setError(data.error);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("An error occurred.");
     }
   };
 
   return (
-    <div style={styles.container}>
-      <style>
-        {`@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');`}
-      </style>
-      <h1 style={styles.title}>Welcome!</h1>
-      <p style={styles.subtitle}>
-        {mode === 'signin'
-          ? 'Sign in to continue.'
-          : 'Create your account to get started.'}
-      </p>
-      <form onSubmit={handleSubmit} style={{ ...styles.form, marginTop: error ? 20 : 0 }}>
-        {error && <div style={styles.alert}>{error}</div>}
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-        />
-        <button
-          type="submit"
-          style={{
-            ...styles.button,
-            transform: clicked ? 'scale(0.98)' : 'scale(1)',
-            transition: 'transform 0.1s ease-in-out',
-          }}
-        >
-          {mode === 'signin' ? 'SIGN IN' : 'SIGN UP'}
-        </button>
-        <p
-          onClick={() => {
-            setError('');
-            setMode(mode === 'signin' ? 'signup' : 'signin');
-          }}
-          style={styles.toggle}
-        >
-          {mode === 'signin'
-            ? 'Belum punya akun? Sign up di sini'
-            : 'Sudah punya akun? Sign in di sini'}
-        </p>
-      </form>
+    <div style={{
+      fontFamily: "sans-serif",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      padding: "40px 20px",
+      minHeight: "100vh",
+      background: "linear-gradient(to bottom, #2196f3 30%, white 30%)",
+    }}>
+      {isSignUp && (
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2 style={{ color: "white" }}>New here?</h2>
+          <p style={{ color: "white" }}>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio minus natus est.
+          </p>
+          <button
+            onClick={() => setIsSignUp(false)}
+            style={{
+              border: "2px solid white",
+              background: "transparent",
+              color: "white",
+              padding: "10px 25px",
+              borderRadius: "25px",
+              marginTop: "10px",
+              cursor: "pointer"
+            }}
+          >
+            SIGN UP
+          </button>
+        </div>
+      )}
+
+      {!isSignUp && (
+        <div style={{ width: "100%", maxWidth: "400px", background: "white", padding: "30px", borderRadius: "20px", boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}>
+          <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Sign In</h2>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+            <input
+              type="email"
+              placeholder="Username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{
+                padding: "15px",
+                borderRadius: "30px",
+                border: "none",
+                backgroundColor: "#f1f1f1",
+                fontSize: "16px"
+              }}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{
+                padding: "15px",
+                borderRadius: "30px",
+                border: "none",
+                backgroundColor: "#f1f1f1",
+                fontSize: "16px"
+              }}
+            />
+            <button
+              type="submit"
+              style={{
+                backgroundColor: "#2196f3",
+                color: "white",
+                padding: "15px",
+                borderRadius: "30px",
+                border: "none",
+                fontWeight: "bold",
+                cursor: "pointer"
+              }}
+            >
+              LOGIN
+            </button>
+          </form>
+          <p style={{ textAlign: "center", marginTop: "20px" }}>Or Sign in with social platforms</p>
+          <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginTop: "10px" }}>
+            {[...Array(4)].map((_, i) => (
+              <div key={i} style={{
+                width: "50px",
+                height: "50px",
+                borderRadius: "50%",
+                border: "2px solid black"
+              }}></div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <button
+        onClick={() => setIsSignUp(!isSignUp)}
+        style={{
+          marginTop: "30px",
+          background: "none",
+          border: "none",
+          color: isSignUp ? "white" : "#2196f3",
+          cursor: "pointer",
+          fontSize: "14px"
+        }}
+      >
+        {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
+      </button>
+
+      {error && <p style={{ color: "red", marginTop: 20 }}>{error}</p>}
     </div>
   );
-}
-
-const styles = {
-  container: {
-    fontFamily: "'Cal Sans', sans-serif",
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    paddingTop: '50px',
-    backgroundColor: '#2196F3',
-    height: '100vh',
-    color: '#fff',
-  },
-  title: {
-    fontSize: '32px',
-    marginBottom: '8px',
-  },
-  subtitle: {
-    marginBottom: '20px',
-  },
-  form: {
-    backgroundColor: '#fff',
-    padding: '30px',
-    borderRadius: '20px',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '80%',
-    maxWidth: '400px',
-    boxShadow: '0 0 15px rgba(0,0,0,0.1)',
-    color: 'black',
-  },
-  input: {
-    marginBottom: '15px',
-    padding: '15px',
-    borderRadius: '10px',
-    border: '1px solid #ccc',
-    fontSize: '16px',
-    fontFamily: "'Cal Sans', sans-serif",
-  },
-  button: {
-    padding: '15px',
-    backgroundColor: '#2196F3',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '10px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    fontFamily: "'Cal Sans', sans-serif",
-  },
-  toggle: {
-    marginTop: '15px',
-    textAlign: 'center',
-    color: '#2196F3',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-  },
-  alert: {
-    backgroundColor: '#ffdddd',
-    color: '#d8000c',
-    padding: '10px',
-    borderRadius: '10px',
-    marginBottom: '15px',
-    fontSize: '14px',
-    textAlign: 'center',
-  },
-};
+                }

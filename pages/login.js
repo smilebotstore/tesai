@@ -1,3 +1,4 @@
+// pages/login.js
 import React, { useState } from 'react';
 
 export default function LoginPage() {
@@ -12,7 +13,7 @@ export default function LoginPage() {
     setClicked(true);
     setError('');
 
-    const res = await fetch('/api/auth.js', {
+    const res = await fetch('/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -28,7 +29,7 @@ export default function LoginPage() {
     if (res.ok) {
       alert(data.message);
     } else {
-      setError(data.message || 'Terjadi kesalahan.');
+      setError(data.error || 'Terjadi kesalahan.');
     }
   };
 
@@ -51,6 +52,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           style={styles.input}
+          required
         />
         <input
           type="password"
@@ -58,6 +60,7 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
+          required
         />
         <button
           type="submit"
